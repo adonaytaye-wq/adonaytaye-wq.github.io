@@ -1,191 +1,187 @@
+
 <!DOCTYPE html>
 <html>
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Spin Fate</title>
+<title>Destiny Engine</title>
 
 <style>
 *{margin:0;padding:0;box-sizing:border-box;}
 
 body{
-  background:#0e111a;
+  background:#000;
+  overflow:hidden;
   font-family:Arial, sans-serif;
   color:white;
-  text-align:center;
-  overflow:hidden;
-}
-
-/* Center sections */
-.section{
-  position:absolute;
-  width:100%;
-  height:100vh;
   display:flex;
   justify-content:center;
   align-items:center;
-  flex-direction:column;
-  padding:20px;
+  height:100vh;
 }
 
-/* INTRO */
-#intro{
-  background:black;
-  font-size:28px;
+/* PARTICLES */
+canvas{
+  position:fixed;
+  top:0;
+  left:0;
+  z-index:-1;
 }
 
-/* WHEEL */
-#wheelSection{
-  display:none;
+/* CENTER */
+.container{
+  text-align:center;
+  perspective:1000px;
 }
 
-#wheel{
-  width:90vw;
-  height:90vw;
-  max-width:500px;
-  max-height:500px;
+h1{
+  font-size:42px;
+  letter-spacing:3px;
+  margin-bottom:40px;
 }
 
 /* BUTTON */
 button{
-  margin-top:25px;
-  padding:15px 40px;
+  padding:18px 60px;
   font-size:22px;
-  background:#00eaff;
-  color:black;
   border:none;
-  border-radius:40px;
+  border-radius:50px;
+  background:linear-gradient(45deg,#ff00cc,#3333ff);
+  color:white;
+  font-weight:bold;
+  cursor:pointer;
+  box-shadow:0 0 25px #ff00cc;
+  transition:0.3s;
 }
 
-/* REVEAL */
-#reveal{
-  display:none;
-  background:black;
+button:hover{
+  transform:scale(1.1);
+  box-shadow:0 0 50px #ff00cc;
 }
 
-.line{
-  font-size:30px;
-  margin:15px;
+/* CARD */
+.card{
+  width:280px;
+  height:180px;
+  margin:40px auto;
+  position:relative;
+  transform-style:preserve-3d;
+  transition:1s;
 }
 
-#result{
-  font-size:48px;
-  color:#00eaff;
-  margin-top:25px;
+.card.flip{
+  transform:rotateY(180deg);
+}
+
+.side{
+  position:absolute;
+  width:100%;
+  height:100%;
+  backface-visibility:hidden;
+  border-radius:20px;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  font-size:22px;
+  padding:20px;
+}
+
+.front{
+  background:#111;
+  border:2px solid #444;
+}
+
+.back{
+  background:linear-gradient(45deg,#ff00cc,#3333ff);
+  transform:rotateY(180deg);
+  font-size:26px;
+  font-weight:bold;
 }
 </style>
 </head>
 <body>
 
-<!-- INTRO -->
-<div id="intro" class="section">
-  People overthink love...<br><br>
-  But what if...<br><br>
-  Whatever it lands on.
-</div>
+<canvas id="bg"></canvas>
 
-<!-- WHEEL -->
-<div id="wheelSection" class="section">
-  <h1 style="font-size:34px;">SPIN FATE</h1>
-  <canvas id="wheel"></canvas>
-  <button onclick="spin()">SPIN</button>
-</div>
+<div class="container">
+  <h1>DESTINY ENGINE</h1>
+  <button onclick="reveal()">UNLOCK</button>
 
-<!-- REVEAL -->
-<div id="reveal" class="section">
-  <div class="line">Whatever it lands on...</div>
-  <div class="line">It doesn’t matter.</div>
-  <div class="line">It’s with you.</div>
-  <div id="result"></div>
-  <button onclick="location.reload()">Replay</button>
+  <div class="card" id="card">
+    <div class="side front">Tap UNLOCK<br>and let fate decide...</div>
+    <div class="side back" id="result"></div>
+  </div>
 </div>
 
 <script>
 
-/* Show wheel after 3 seconds */
-setTimeout(()=>{
-  document.getElementById("intro").style.display="none";
-  document.getElementById("wheelSection").style.display="flex";
-},3000);
-
-/* Ideas */
-const ideas=[
-"Night Walk 🌙",
-"Arcade 🎮",
-"Ice Cream 🍦",
-"Movie Night 🎬",
-"Road Trip 🚗",
-"Late Coffee ☕",
-"Picnic 🌿",
-"Rooftop 🌆"
-];
-
-const canvas=document.getElementById("wheel");
+/* PARTICLES BACKGROUND */
+const canvas=document.getElementById("bg");
 const ctx=canvas.getContext("2d");
+canvas.width=innerWidth;
+canvas.height=innerHeight;
 
-function resize(){
-  canvas.width=canvas.clientWidth;
-  canvas.height=canvas.clientHeight;
-  draw();
+let particles=[];
+for(let i=0;i<120;i++){
+  particles.push({
+    x:Math.random()*canvas.width,
+    y:Math.random()*canvas.height,
+    r:Math.random()*2,
+    dx:(Math.random()-0.5),
+    dy:(Math.random()-0.5)
+  });
 }
-window.addEventListener("resize",resize);
 
-let rotation=0;
-
-function draw(){
-  const radius=canvas.width/2;
-  const slice=2*Math.PI/ideas.length;
+function animate(){
   ctx.clearRect(0,0,canvas.width,canvas.height);
-
-  for(let i=0;i<ideas.length;i++){
+  ctx.fillStyle="white";
+  particles.forEach(p=>{
     ctx.beginPath();
-    ctx.moveTo(radius,radius);
-    ctx.arc(radius,radius,radius,
-      rotation+i*slice,
-      rotation+(i+1)*slice);
-    ctx.fillStyle=i%2?"#1a2033":"#252c44";
+    ctx.arc(p.x,p.y,p.r,0,Math.PI*2);
     ctx.fill();
+    p.x+=p.dx;
+    p.y+=p.dy;
 
-    ctx.save();
-    ctx.translate(radius,radius);
-    ctx.rotate(rotation+i*slice+slice/2);
-    ctx.fillStyle="white";
-    ctx.textAlign="right";
-    ctx.font=(canvas.width/14)+"px Arial";
-    ctx.fillText(ideas[i],radius-20,5);
-    ctx.restore();
-  }
-}
-resize();
-
-/* Spin */
-function spin(){
-  let duration=4000;
-  let start=null;
-  let spinAmount=Math.random()*8+10;
-
-  function animate(t){
-    if(!start) start=t;
-    let progress=t-start;
-    let ease=1-Math.pow(1-progress/duration,3);
-    rotation=spinAmount*ease;
-    draw();
-
-    if(progress<duration){
-      requestAnimationFrame(animate);
-    } else {
-      showResult();
-    }
-  }
+    if(p.x<0||p.x>canvas.width) p.dx*=-1;
+    if(p.y<0||p.y>canvas.height) p.dy*=-1;
+  });
   requestAnimationFrame(animate);
 }
+animate();
 
-function showResult(){
-  document.getElementById("wheelSection").style.display="none";
-  document.getElementById("reveal").style.display="flex";
+/* IDEAS */
+const ideas=[
+"Midnight Escape 🌙",
+"Secret Adventure 🔥",
+"Unexpected Trip ✈️",
+"City Lights Walk 🌆",
+"Late Night Drive 🚗",
+"Hidden Feelings 💫",
+"Spontaneous Date ❤️",
+"Risk Everything ⚡"
+];
 
-  const result=ideas[Math.floor(Math.random()*ideas.length)];
-  document.getElementById("result").innerText=result;
+/* SOUND */
+function playSound(){
+  const audioCtx=new (window.AudioContext||window.webkitAudioContext)();
+  const oscillator=audioCtx.createOscillator();
+  oscillator.type="sine";
+  oscillator.frequency.setValueAtTime(200,audioCtx.currentTime);
+  oscillator.frequency.exponentialRampToValueAtTime(800,audioCtx.currentTime+0.3);
+  oscillator.connect(audioCtx.destination);
+  oscillator.start();
+  oscillator.stop(audioCtx.currentTime+0.3);
+}
+
+/* REVEAL */
+function reveal(){
+  const card=document.getElementById("card");
+  const result=document.getElementById("result");
+  const random=ideas[Math.floor(Math.random()*ideas.length)];
+  result.innerText=random;
+
+  playSound();
+  card.classList.toggle("flip");
 }
 
 </script>
