@@ -1,189 +1,145 @@
-
 <!DOCTYPE html>
 <html>
 <head>
-<meta charset="UTF-8">
+<title>For Someone Special 💖</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Destiny Engine</title>
 
 <style>
-*{margin:0;padding:0;box-sizing:border-box;}
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+font-family:'Segoe UI', sans-serif;
+}
 
 body{
-  background:#000;
-  overflow:hidden;
-  font-family:Arial, sans-serif;
-  color:white;
-  display:flex;
-  justify-content:center;
-  align-items:center;
-  height:100vh;
-}
-
-/* PARTICLES */
-canvas{
-  position:fixed;
-  top:0;
-  left:0;
-  z-index:-1;
-}
-
-/* CENTER */
-.container{
-  text-align:center;
-  perspective:1000px;
+height:100vh;
+display:flex;
+flex-direction:column;
+justify-content:center;
+align-items:center;
+background:linear-gradient(135deg,#ff9a9e,#fad0c4);
+overflow:hidden;
+text-align:center;
 }
 
 h1{
-  font-size:42px;
-  letter-spacing:3px;
-  margin-bottom:40px;
+font-size:38px;
+margin-bottom:10px;
+color:#fff;
 }
 
-/* BUTTON */
-button{
-  padding:18px 60px;
-  font-size:22px;
-  border:none;
-  border-radius:50px;
-  background:linear-gradient(45deg,#ff00cc,#3333ff);
-  color:white;
-  font-weight:bold;
-  cursor:pointer;
-  box-shadow:0 0 25px #ff00cc;
-  transition:0.3s;
+.subtitle{
+font-size:18px;
+margin-bottom:30px;
+color:#fff;
+opacity:0.9;
 }
 
-button:hover{
-  transform:scale(1.1);
-  box-shadow:0 0 50px #ff00cc;
+.wheel-wrapper{
+position:relative;
+width:320px;
+height:320px;
 }
 
-/* CARD */
-.card{
-  width:280px;
-  height:180px;
-  margin:40px auto;
-  position:relative;
-  transform-style:preserve-3d;
-  transition:1s;
+.wheel{
+width:100%;
+height:100%;
+border-radius:50%;
+background:conic-gradient(
+#ff4e50 0deg 60deg,
+#fc913a 60deg 120deg,
+#f9d423 120deg 180deg,
+#00c9ff 180deg 240deg,
+#a18cd1 240deg 300deg,
+#ff4e50 300deg 360deg
+);
+transition:transform 4s ease-out;
+box-shadow:0 15px 40px rgba(0,0,0,0.3);
 }
 
-.card.flip{
-  transform:rotateY(180deg);
+.pointer{
+position:absolute;
+top:-20px;
+left:50%;
+transform:translateX(-50%);
+width:0;
+height:0;
+border-left:15px solid transparent;
+border-right:15px solid transparent;
+border-bottom:25px solid white;
 }
 
-.side{
-  position:absolute;
-  width:100%;
-  height:100%;
-  backface-visibility:hidden;
-  border-radius:20px;
-  display:flex;
-  justify-content:center;
-  align-items:center;
-  font-size:22px;
-  padding:20px;
+.spin-btn{
+margin-top:30px;
+padding:15px 40px;
+font-size:18px;
+border:none;
+border-radius:30px;
+background:#fff;
+color:#ff4e50;
+cursor:pointer;
+transition:0.3s;
 }
 
-.front{
-  background:#111;
-  border:2px solid #444;
+.spin-btn:hover{
+transform:scale(1.1);
 }
 
-.back{
-  background:linear-gradient(45deg,#ff00cc,#3333ff);
-  transform:rotateY(180deg);
-  font-size:26px;
-  font-weight:bold;
+.result{
+margin-top:30px;
+font-size:22px;
+color:#fff;
+min-height:40px;
+font-weight:bold;
 }
 </style>
 </head>
+
 <body>
 
-<canvas id="bg"></canvas>
+<h1>Spin My Heart 💘</h1>
+<div class="subtitle">Warning: May cause smiling 😌</div>
 
-<div class="container">
-  <h1>DESTINY ENGINE</h1>
-  <button onclick="reveal()">UNLOCK</button>
-
-  <div class="card" id="card">
-    <div class="side front">Tap UNLOCK<br>and let fate decide...</div>
-    <div class="side back" id="result"></div>
-  </div>
+<div class="wheel-wrapper">
+<div class="pointer"></div>
+<div class="wheel" id="wheel"></div>
 </div>
 
+<button class="spin-btn" onclick="spinWheel()">Spin Now 💞</button>
+
+<div class="result" id="result">Click spin and see what you win 👀</div>
+
 <script>
+let wheel = document.getElementById("wheel");
+let result = document.getElementById("result");
+let currentRotation = 0;
 
-/* PARTICLES BACKGROUND */
-const canvas=document.getElementById("bg");
-const ctx=canvas.getContext("2d");
-canvas.width=innerWidth;
-canvas.height=innerHeight;
-
-let particles=[];
-for(let i=0;i<120;i++){
-  particles.push({
-    x:Math.random()*canvas.width,
-    y:Math.random()*canvas.height,
-    r:Math.random()*2,
-    dx:(Math.random()-0.5),
-    dy:(Math.random()-0.5)
-  });
-}
-
-function animate(){
-  ctx.clearRect(0,0,canvas.width,canvas.height);
-  ctx.fillStyle="white";
-  particles.forEach(p=>{
-    ctx.beginPath();
-    ctx.arc(p.x,p.y,p.r,0,Math.PI*2);
-    ctx.fill();
-    p.x+=p.dx;
-    p.y+=p.dy;
-
-    if(p.x<0||p.x>canvas.width) p.dx*=-1;
-    if(p.y<0||p.y>canvas.height) p.dy*=-1;
-  });
-  requestAnimationFrame(animate);
-}
-animate();
-
-/* IDEAS */
-const ideas=[
-"Midnight Escape 🌙",
-"Secret Adventure 🔥",
-"Unexpected Trip ✈️",
-"City Lights Walk 🌆",
-"Late Night Drive 🚗",
-"Hidden Feelings 💫",
-"Spontaneous Date ❤️",
-"Risk Everything ⚡"
+let messages = [
+"You're stuck with me now 😌",
+"Free hug voucher 🤗",
+"You owe me a smile 😊",
+"Official cuddle partner 💕",
+"Date night unlocked 🌙",
+"You just won my heart 💖"
 ];
 
-/* SOUND */
-function playSound(){
-  const audioCtx=new (window.AudioContext||window.webkitAudioContext)();
-  const oscillator=audioCtx.createOscillator();
-  oscillator.type="sine";
-  oscillator.frequency.setValueAtTime(200,audioCtx.currentTime);
-  oscillator.frequency.exponentialRampToValueAtTime(800,audioCtx.currentTime+0.3);
-  oscillator.connect(audioCtx.destination);
-  oscillator.start();
-  oscillator.stop(audioCtx.currentTime+0.3);
+function spinWheel(){
+
+let randomIndex = Math.floor(Math.random() * messages.length);
+let degrees = 360 * 6 + (randomIndex * 60);
+
+currentRotation += degrees;
+
+wheel.style.transform = "rotate(" + currentRotation + "deg)";
+
+result.innerText = "Spinning... 💫";
+
+setTimeout(function(){
+result.innerText = messages[randomIndex];
+},4000);
+
 }
-
-/* REVEAL */
-function reveal(){
-  const card=document.getElementById("card");
-  const result=document.getElementById("result");
-  const random=ideas[Math.floor(Math.random()*ideas.length)];
-  result.innerText=random;
-
-  playSound();
-  card.classList.toggle("flip");
-}
-
 </script>
 
 </body>
