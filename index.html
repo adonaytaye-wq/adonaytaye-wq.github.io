@@ -1,146 +1,245 @@
 <!DOCTYPE html>
 <html>
 <head>
-<title>For Someone Special 💖</title>
+<title>Nuha 💖</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
 <style>
-*{
-margin:0;
-padding:0;
-box-sizing:border-box;
-font-family:'Segoe UI', sans-serif;
-}
-
+*{margin:0;padding:0;box-sizing:border-box;font-family:'Segoe UI',sans-serif;}
 body{
 height:100vh;
+overflow:hidden;
+background:linear-gradient(-45deg,#ff758c,#ff7eb3,#ff9770,#ff4e50);
+background-size:400% 400%;
+animation:gradient 15s ease infinite;
+color:white;
+display:flex;
+justify-content:center;
+align-items:center;
+text-align:center;
+}
+@keyframes gradient{
+0%{background-position:0% 50%}
+50%{background-position:100% 50%}
+100%{background-position:0% 50%}
+}
+
+/* Floating hearts */
+.heart{
+position:absolute;
+font-size:18px;
+animation:float 8s linear infinite;
+opacity:0.5;
+}
+@keyframes float{
+0%{transform:translateY(100vh);opacity:0;}
+100%{transform:translateY(-10vh);opacity:1;}
+}
+
+/* Sections */
+.section{
+position:absolute;
+width:100%;
+height:100%;
 display:flex;
 flex-direction:column;
 justify-content:center;
 align-items:center;
-background:linear-gradient(135deg,#ff9a9e,#fad0c4);
-overflow:hidden;
-text-align:center;
+opacity:0;
+transition:1s;
+pointer-events:none;
+padding:20px;
 }
+.active{opacity:1;pointer-events:auto;}
 
-h1{
-font-size:38px;
-margin-bottom:10px;
-color:#fff;
-}
+h1{font-size:38px;margin-bottom:20px;}
+p{font-size:20px;max-width:85%;line-height:1.6;}
 
-.subtitle{
-font-size:18px;
-margin-bottom:30px;
-color:#fff;
-opacity:0.9;
-}
-
-.wheel-wrapper{
-position:relative;
-width:320px;
-height:320px;
-}
-
+/* Wheel */
+.wheel-container{position:relative;width:300px;height:300px;margin-top:30px;}
 .wheel{
-width:100%;
-height:100%;
+width:100%;height:100%;
 border-radius:50%;
-background:conic-gradient(
-#ff4e50 0deg 60deg,
-#fc913a 60deg 120deg,
-#f9d423 120deg 180deg,
-#00c9ff 180deg 240deg,
-#a18cd1 240deg 300deg,
-#ff4e50 300deg 360deg
-);
-transition:transform 4s ease-out;
-box-shadow:0 15px 40px rgba(0,0,0,0.3);
+position:relative;
+transition:transform 5s cubic-bezier(.17,.67,.83,.67);
+box-shadow:0 20px 50px rgba(0,0,0,0.3);
 }
-
+.slice{
+position:absolute;
+width:50%;height:50%;
+top:50%;left:50%;
+transform-origin:0% 0%;
+display:flex;justify-content:center;align-items:center;
+font-size:13px;font-weight:bold;color:white;
+}
 .pointer{
 position:absolute;
-top:-20px;
-left:50%;
+top:-18px;left:50%;
 transform:translateX(-50%);
-width:0;
-height:0;
+width:0;height:0;
 border-left:15px solid transparent;
 border-right:15px solid transparent;
 border-bottom:25px solid white;
 }
-
-.spin-btn{
-margin-top:30px;
-padding:15px 40px;
-font-size:18px;
-border:none;
-border-radius:30px;
-background:#fff;
-color:#ff4e50;
-cursor:pointer;
-transition:0.3s;
+button{
+margin-top:25px;
+padding:14px 35px;
+font-size:17px;
+border:none;border-radius:30px;
+background:white;color:#ff4e50;
+cursor:pointer;transition:0.3s;
 }
+button:hover{transform:scale(1.1);}
+.result{margin-top:20px;font-size:22px;min-height:40px;}
 
-.spin-btn:hover{
-transform:scale(1.1);
+/* Confetti */
+.confetti{
+position:absolute;
+width:8px;height:8px;
+background:white;
+animation:fall 3s linear forwards;
 }
-
-.result{
-margin-top:30px;
-font-size:22px;
-color:#fff;
-min-height:40px;
-font-weight:bold;
+@keyframes fall{
+0%{transform:translateY(0) rotate(0);}
+100%{transform:translateY(100vh) rotate(720deg);}
 }
 </style>
 </head>
-
 <body>
 
-<h1>Spin My Heart 💘</h1>
-<div class="subtitle">Warning: May cause smiling 😌</div>
+<!-- SECTION 1 -->
+<div class="section active" id="s1">
+<h1 id="typing"></h1>
+</div>
 
-<div class="wheel-wrapper">
+<!-- SECTION 2 -->
+<div class="section" id="s2">
+<h1>Okay Nuha 😌</h1>
+<p>
+Before we talk about the future...  
+Let’s let destiny pretend it has a choice.
+</p>
+</div>
+
+<!-- SECTION 3 -->
+<div class="section" id="s3">
+<h1>Nuha’s Future Wheel 💫</h1>
+<div class="wheel-container">
 <div class="pointer"></div>
 <div class="wheel" id="wheel"></div>
 </div>
+<button onclick="spinWheel()">Spin It</button>
+<div class="result" id="result"></div>
+</div>
 
-<button class="spin-btn" onclick="spinWheel()">Spin Now 💞</button>
+<!-- SECTION 4 -->
+<div class="section" id="s4">
+<h1>Listen Carefully 💖</h1>
+<p>
+The wheel was random.  
 
-<div class="result" id="result">Click spin and see what you win 👀</div>
+But me choosing you?  
+That wasn’t.  
+
+Nuha…  
+
+You’re not going anywhere.  
+You’re stuck with me.  
+
+And honestly…  
+I’m already picturing a future with you in it.
+</p>
+<button onclick="location.reload()">Replay 🔄</button>
+</div>
 
 <script>
-let wheel = document.getElementById("wheel");
-let result = document.getElementById("result");
-let currentRotation = 0;
 
-let messages = [
-"You're stuck with me now 😌",
-"Free hug voucher 🤗",
-"You owe me a smile 😊",
-"Official cuddle partner 💕",
-"Date night unlocked 🌙",
-"You just won my heart 💖"
+/* Floating hearts */
+setInterval(()=>{
+let heart=document.createElement("div");
+heart.className="heart";
+heart.style.left=Math.random()*100+"vw";
+heart.innerHTML="💖";
+document.body.appendChild(heart);
+setTimeout(()=>heart.remove(),8000);
+},500);
+
+/* Typing effect */
+let text="Hey Nuha 👀 I built something for you...";
+let i=0;
+function type(){
+if(i<text.length){
+document.getElementById("typing").innerHTML+=text.charAt(i);
+i++;
+setTimeout(type,60);
+}else{
+setTimeout(nextSection,2000);
+}
+}
+type();
+
+/* Section control */
+let sections=["s1","s2","s3","s4"];
+let index=0;
+function nextSection(){
+if(index<sections.length-1){
+document.getElementById(sections[index]).classList.remove("active");
+index++;
+document.getElementById(sections[index]).classList.add("active");
+}
+}
+setTimeout(()=>{if(index===1)nextSection();},7000);
+
+/* Wheel words */
+let wheel=document.getElementById("wheel");
+let result=document.getElementById("result");
+let words=[
+"Future Wife Energy 💍",
+"Officially Mine 😌",
+"No Escape Nuha 😈",
+"Cuddle Contract Signed 🤝",
+"Main Character 💖",
+"Forever Starting Now ♾️"
 ];
+let colors=["#ff4e50","#fc913a","#f9d423","#00c9ff","#a18cd1","#ff4e50"];
 
+for(let i=0;i<words.length;i++){
+let slice=document.createElement("div");
+slice.className="slice";
+slice.style.background=colors[i];
+slice.style.transform="rotate("+(i*60)+"deg) skewY(-30deg)";
+slice.innerHTML="<span style='transform:skewY(30deg) rotate(30deg); display:block; width:120px;'>"+words[i]+"</span>";
+wheel.appendChild(slice);
+}
+
+/* Spin */
+let currentRotation=0;
 function spinWheel(){
 
-let randomIndex = Math.floor(Math.random() * messages.length);
-let degrees = 360 * 6 + (randomIndex * 60);
+let randomIndex=Math.floor(Math.random()*words.length);
+let degrees=360*6+(randomIndex*60);
+currentRotation+=degrees;
+wheel.style.transform="rotate("+currentRotation+"deg)";
+result.innerText="Spinning... 💫";
 
-currentRotation += degrees;
-
-wheel.style.transform = "rotate(" + currentRotation + "deg)";
-
-result.innerText = "Spinning... 💫";
-
-setTimeout(function(){
-result.innerText = messages[randomIndex];
-},4000);
-
+setTimeout(()=>{
+result.innerText=words[randomIndex];
+confettiExplosion();
+setTimeout(nextSection,4000);
+},5000);
 }
-</script>
 
+/* Confetti */
+function confettiExplosion(){
+for(let i=0;i<80;i++){
+let conf=document.createElement("div");
+conf.className="confetti";
+conf.style.left=Math.random()*100+"vw";
+conf.style.background=["#fff","#ffd700","#ff4e50","#00c9ff"][Math.floor(Math.random()*4)];
+document.body.appendChild(conf);
+setTimeout(()=>conf.remove(),3000);
+}
+}
+
+</script>
 </body>
 </html>
